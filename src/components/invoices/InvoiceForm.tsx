@@ -343,9 +343,9 @@ export function InvoiceForm() {
                           displayEmpty
                         >
                           <MenuItem value="" disabled>
-                            <span style={{ color: "#94A3B8" }}>
+                            <Typography sx={{ color: "#94A3B8" }}>
                               Choose the status
-                            </span>
+                            </Typography>
                           </MenuItem>
                           <MenuItem value="PAID">Paid</MenuItem>
                           <MenuItem value="UNPAID">Unpaid</MenuItem>
