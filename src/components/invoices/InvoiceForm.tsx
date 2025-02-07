@@ -10,7 +10,6 @@ import {
   FormHelperText,
   Grid,
   InputAdornment,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -37,6 +36,13 @@ const RequiredLabel = styled("span")({
   marginLeft: "2px",
 });
 
+const FieldLabel = styled(Typography)({
+  fontSize: "14px",
+  fontWeight: 500,
+  color: "#1E293B",
+  marginBottom: "8px",
+});
+
 const StyledTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
     backgroundColor: "white",
@@ -48,12 +54,6 @@ const StyledTextField = styled(TextField)({
     },
     "&.Mui-focused fieldset": {
       borderColor: "#4F46E5",
-    },
-  },
-  "& .MuiInputLabel-root": {
-    color: "#475569",
-    "&.Mui-focused": {
-      color: "#4F46E5",
     },
   },
   "& .MuiInputBase-input::placeholder": {
@@ -109,127 +109,129 @@ export function InvoiceForm() {
           <FormTitle>Invoice Form</FormTitle>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <Controller
-                name="name"
-                control={control}
-                render={({ field }) => (
-                  <StyledTextField
-                    {...field}
-                    label={
-                      <>
-                        Name<RequiredLabel>*</RequiredLabel>
-                      </>
-                    }
-                    error={!!errors.name}
-                    helperText={errors.name?.message}
-                    fullWidth
-                    placeholder="Enter your invoice name"
-                  />
-                )}
-              />
+              <Box>
+                <FieldLabel>
+                  Name<RequiredLabel>*</RequiredLabel>
+                </FieldLabel>
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => (
+                    <StyledTextField
+                      {...field}
+                      error={!!errors.name}
+                      helperText={errors.name?.message}
+                      fullWidth
+                      placeholder="Enter your invoice name"
+                    />
+                  )}
+                />
+              </Box>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Controller
-                name="number"
-                control={control}
-                render={({ field }) => (
-                  <StyledTextField
-                    {...field}
-                    label={
-                      <>
-                        Number<RequiredLabel>*</RequiredLabel>
-                      </>
-                    }
-                    error={!!errors.number}
-                    helperText={errors.number?.message}
-                    fullWidth
-                    placeholder="Enter your invoice number"
-                  />
-                )}
-              />
+              <Box>
+                <FieldLabel>
+                  Number<RequiredLabel>*</RequiredLabel>
+                </FieldLabel>
+                <Controller
+                  name="number"
+                  control={control}
+                  render={({ field }) => (
+                    <StyledTextField
+                      {...field}
+                      error={!!errors.number}
+                      helperText={errors.number?.message}
+                      fullWidth
+                      placeholder="Enter your invoice number"
+                    />
+                  )}
+                />
+              </Box>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Controller
-                name="dueDate"
-                control={control}
-                render={({ field }) => (
-                  <StyledTextField
-                    {...field}
-                    label={
-                      <>
-                        Due Date<RequiredLabel>*</RequiredLabel>
-                      </>
-                    }
-                    type="date"
-                    error={!!errors.dueDate}
-                    helperText={errors.dueDate?.message}
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                    placeholder="DD/MM/YYYY"
-                  />
-                )}
-              />
+              <Box>
+                <FieldLabel>
+                  Due Date<RequiredLabel>*</RequiredLabel>
+                </FieldLabel>
+                <Controller
+                  name="dueDate"
+                  control={control}
+                  render={({ field }) => (
+                    <StyledTextField
+                      {...field}
+                      type="date"
+                      error={!!errors.dueDate}
+                      helperText={errors.dueDate?.message}
+                      fullWidth
+                      InputLabelProps={{ shrink: true }}
+                      placeholder="DD/MM/YYYY"
+                    />
+                  )}
+                />
+              </Box>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Controller
-                name="amount"
-                control={control}
-                render={({ field }) => (
-                  <StyledTextField
-                    {...field}
-                    label={
-                      <>
-                        Amount<RequiredLabel>*</RequiredLabel>
-                      </>
-                    }
-                    type="number"
-                    error={!!errors.amount}
-                    helperText={errors.amount?.message}
-                    fullWidth
-                    placeholder="Enter your invoice amount"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Box
-                            sx={{
-                              bgcolor: "#F1F5F9",
-                              px: 2,
-                              py: 1,
-                              borderRadius: 1,
-                              color: "#64748B",
-                              mr: 1,
-                            }}
-                          >
-                            Rp
-                          </Box>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
+              <Box>
+                <FieldLabel>
+                  Amount<RequiredLabel>*</RequiredLabel>
+                </FieldLabel>
+                <Controller
+                  name="amount"
+                  control={control}
+                  render={({ field }) => (
+                    <StyledTextField
+                      {...field}
+                      type="number"
+                      error={!!errors.amount}
+                      helperText={errors.amount?.message}
+                      fullWidth
+                      placeholder="Enter your invoice amount"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Box
+                              sx={{
+                                bgcolor: "#F1F5F9",
+                                px: 2,
+                                py: 1,
+                                borderRadius: 1,
+                                color: "#64748B",
+                                mr: 1,
+                              }}
+                            >
+                              Rp
+                            </Box>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+              </Box>
             </Grid>
             <Grid item xs={12}>
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <FormControl error={!!errors.status} fullWidth>
-                    <InputLabel>
-                      Status<RequiredLabel>*</RequiredLabel>
-                    </InputLabel>
-                    <StyledSelect {...field} label="Status*">
-                      <MenuItem value="">Choose the status</MenuItem>
-                      <MenuItem value="PAID">Paid</MenuItem>
-                      <MenuItem value="PENDING">Pending</MenuItem>
-                      <MenuItem value="OVERDUE">Overdue</MenuItem>
-                    </StyledSelect>
-                    {errors.status && (
-                      <FormHelperText>{errors.status.message}</FormHelperText>
-                    )}
-                  </FormControl>
-                )}
-              />
+              <Box>
+                <FieldLabel>
+                  Status<RequiredLabel>*</RequiredLabel>
+                </FieldLabel>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl error={!!errors.status} fullWidth>
+                      <StyledSelect {...field}>
+                        <MenuItem value="">Choose the status</MenuItem>
+                        <MenuItem value="PAID">Paid</MenuItem>
+                        <MenuItem value="PENDING">Pending</MenuItem>
+                        <MenuItem value="OVERDUE">Overdue</MenuItem>
+                      </StyledSelect>
+                      {errors.status && (
+                        <FormHelperText>{errors.status.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  )}
+                />
+              </Box>
             </Grid>
           </Grid>
           <SubmitButton type="submit" variant="contained" size="large">
