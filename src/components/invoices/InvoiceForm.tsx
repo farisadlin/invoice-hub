@@ -13,6 +13,7 @@ import {
   Select,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -22,6 +23,8 @@ import { InvoiceSchema, type InvoiceFormData } from "@/lib/schemas/invoice";
 import { formatCurrency, parseCurrency } from "@/utils/format";
 import styled from "@emotion/styled";
 import { format } from "date-fns";
+import { useState } from "react";
+import CheckIcon from "@mui/icons-material/Check";
 
 const StyledCard = styled(Card)({
   border: "1px solid #E2E8F0",
@@ -121,6 +124,7 @@ const SubmitButton = styled(Button)({
 });
 
 export function InvoiceForm() {
+  const [open, setOpen] = useState(false);
   const {
     control,
     handleSubmit,
@@ -141,6 +145,7 @@ export function InvoiceForm() {
       ...data,
       dueDate: format(new Date(data.dueDate), "yyyy-MM-dd"),
     });
+    setOpen(true);
   };
 
   return (
@@ -287,7 +292,7 @@ export function InvoiceForm() {
                         value={value ? formatCurrency(value) : ""}
                         onChange={(e) => {
                           const parsed = parseCurrency(e.target.value);
-                          onChange(parsed);
+                          onChange(parsed || 0);
                         }}
                         error={!!errors.amount}
                         helperText={errors.amount?.message}
@@ -369,6 +374,63 @@ export function InvoiceForm() {
             </Box>
           </CardContent>
         </StyledCard>
+        {open && (
+          <Alert
+            icon={false}
+            sx={{
+              mt: "38px",
+              backgroundColor: "#ECFDF5",
+              color: "#004434",
+              borderRadius: "4px",
+              borderLeft: "8px solid #34D399",
+              height: "115px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              "& .MuiAlert-message": {
+                width: "100%",
+                textAlign: "center",
+              },
+            }}
+          >
+            <Box
+              sx={{
+                textAlign: "left",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "12px",
+              }}
+            >
+              <Box
+                component="span"
+                sx={{
+                  width: 22,
+                  height: 22,
+                  bgcolor: "#34D399",
+                  borderRadius: "25%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                  mt: "2px",
+                }}
+              >
+                <CheckIcon sx={{ fontSize: 16 }} />
+              </Box>
+              <Box>
+                <Typography
+                  sx={{ fontWeight: 700, fontSize: "16px", mb: "8px" }}
+                >
+                  Invoice added successfully!
+                </Typography>
+                <Typography sx={{ color: "#637381" }}>
+                  You can view and manage your invoice in the &apos;My
+                  Invoices&apos; section.
+                </Typography>
+              </Box>
+            </Box>
+          </Alert>
+        )}
       </Box>
     </LocalizationProvider>
   );
