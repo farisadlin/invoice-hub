@@ -6,6 +6,9 @@ export const theme = createTheme({
       main: "#4F46E5",
       dark: "#4338CA",
     },
+    background: {
+      default: "#F8FAFC",
+    },
   },
   typography: {
     fontFamily: "var(--font-open-sans), sans-serif",
