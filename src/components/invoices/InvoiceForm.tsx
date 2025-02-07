@@ -123,12 +123,31 @@ const SubmitButton = styled(Button)({
   },
 });
 
+const STORAGE_KEY = "invoices";
+
+const getStoredInvoices = () => {
+  if (typeof window === "undefined") return [];
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored ? JSON.parse(stored) : [];
+};
+
+const storeInvoice = (invoice: InvoiceFormData) => {
+  const invoices = getStoredInvoices();
+  const newInvoice = {
+    ...invoice,
+    id: Date.now().toString(),
+    createdAt: new Date().toISOString(),
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...invoices, newInvoice]));
+};
+
 export function InvoiceForm() {
   const [open, setOpen] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<InvoiceFormData>({
     resolver: zodResolver(InvoiceSchema),
     defaultValues: {
@@ -141,11 +160,22 @@ export function InvoiceForm() {
   });
 
   const onSubmit = (data: InvoiceFormData) => {
-    console.log({
+    const formattedData = {
       ...data,
       dueDate: format(new Date(data.dueDate), "yyyy-MM-dd"),
-    });
+    };
+
+    // Store the invoice in local storage
+    storeInvoice(formattedData);
+
+    // Show success message and reset form
     setOpen(true);
+    reset();
+
+    // Hide success message after 6 seconds
+    setTimeout(() => {
+      setOpen(false);
+    }, 6000);
   };
 
   return (

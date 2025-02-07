@@ -6,17 +6,23 @@ import { Topbar } from "@/components/Topbar";
 
 const LayoutContainer = styled(Box)({
   display: "flex",
+  minHeight: "100vh",
 });
 
 const MainContent = styled(Box)({
   marginLeft: 280,
   width: "calc(100% - 280px)",
-  minHeight: "100vh",
+  height: "100vh",
   backgroundColor: "#F8FAFC",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
 });
 
 const PageContent = styled(Box)({
   padding: "24px 32px",
+  flexGrow: 1,
+  overflowY: "auto",
 });
 
 export default function InvoicesLayout({

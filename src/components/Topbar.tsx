@@ -13,13 +13,21 @@ import { NotificationsNone } from "@mui/icons-material";
 
 const TopbarContainer = styled(Box)(({ theme }) => ({
   height: 80,
-  backgroundColor: "white",
+  backgroundColor: "rgba(255, 255, 255, 0.98)",
   borderBottom: "1px solid #E2E8F0",
   padding: theme.spacing(2, 4),
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
   gap: theme.spacing(3),
+  position: "sticky",
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: 1100,
+  width: "100%",
+  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+  flex: "0 0 auto",
 }));
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
