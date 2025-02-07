@@ -10,9 +10,10 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { Add as AddIcon, ViewList as ViewListIcon } from "@mui/icons-material";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { AddCircleOutline, FormatListBulleted } from "@mui/icons-material";
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
   width: 280,
@@ -20,6 +21,7 @@ const SidebarContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "#1B2430",
   color: "white",
   padding: theme.spacing(3),
+  paddingLeft: 0,
   position: "fixed",
   left: 0,
   top: 0,
@@ -30,6 +32,7 @@ const Logo = styled(Box)({
   alignItems: "center",
   gap: "8px",
   marginBottom: "48px",
+  paddingLeft: "40px",
   "& svg": {
     width: 32,
     height: 32,
@@ -39,9 +42,8 @@ const Logo = styled(Box)({
 const StyledListItemButton = styled(ListItemButton)<{ active?: boolean }>(
   ({ theme, active }) => ({
     borderRadius: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginLeft: "25px",
     color: active ? "white" : "#94A3B8",
-    backgroundColor: active ? "rgba(255, 255, 255, 0.08)" : "transparent",
     "&:hover": {
       backgroundColor: "rgba(255, 255, 255, 0.12)",
     },
@@ -52,7 +54,9 @@ const MenuLabel = styled(Typography)({
   color: "#64748B",
   fontSize: "14px",
   fontWeight: 500,
+  marginTop: "49.52px",
   marginBottom: "16px",
+  paddingLeft: "40px",
 });
 
 export function Sidebar() {
@@ -61,12 +65,12 @@ export function Sidebar() {
   const menuItems = [
     {
       label: "Add Invoice",
-      icon: <AddIcon />,
+      icon: <AddCircleOutline sx={{ fontSize: 18 }} />,
       href: "/invoices/add",
     },
     {
       label: "My Invoices",
-      icon: <ViewListIcon />,
+      icon: <FormatListBulleted sx={{ fontSize: 18 }} />,
       href: "/invoices/list",
     },
   ];
@@ -74,18 +78,24 @@ export function Sidebar() {
   return (
     <SidebarContainer>
       <Logo>
-        <svg viewBox="0 0 24 24" fill="white">
-          <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
-        </svg>
-        <Typography variant="h6" fontWeight="bold">
-          InvoiceHub
-        </Typography>
+        <Image
+          src="/assets/invoice-hub-logo.svg"
+          alt="InvoiceHub Logo"
+          width={166}
+          height={46}
+        />
       </Logo>
 
       <MenuLabel>MENU</MenuLabel>
-      <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.href} disablePadding>
+      <List sx={{ padding: 0 }}>
+        {menuItems.map((item, index) => (
+          <ListItem
+            key={item.href}
+            disablePadding
+            sx={{
+              marginBottom: index === menuItems.length - 1 ? 0 : undefined, // Remove margin from last item
+            }}
+          >
             <Link
               href={item.href}
               style={{ width: "100%", textDecoration: "none" }}
