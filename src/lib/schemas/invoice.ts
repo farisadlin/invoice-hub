@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValid, parseISO } from "date-fns";
 
 // Invoice schemas will be defined here
 
@@ -11,12 +12,22 @@ export const InvoiceSchema = z.object({
       /^[a-zA-Z0-9\s-]+$/,
       "Invoice name can only contain letters, numbers, spaces, and hyphens"
     ),
-  number: z.string(),
+  number: z
+    .string()
+    .min(1, "Invoice number is required")
+    .regex(
+      /^INV-\d{8}$/,
+      "Invoice number must start with 'INV-' followed by 8 digits"
+    ),
   dueDate: z
     .string()
-    .min(1, "Due date is required")
     .refine((date) => {
-      const selectedDate = new Date(date);
+      if (!date) return false;
+      const parsedDate = parseISO(date);
+      return isValid(parsedDate);
+    }, "Invalid date format")
+    .refine((date) => {
+      const selectedDate = parseISO(date);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       return selectedDate >= today;

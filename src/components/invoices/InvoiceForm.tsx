@@ -9,7 +9,6 @@ import {
   FormControl,
   FormHelperText,
   Grid,
-  InputAdornment,
   MenuItem,
   Select,
   TextField,
@@ -20,18 +19,15 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useForm, Controller } from "react-hook-form";
 import { InvoiceSchema, type InvoiceFormData } from "@/lib/schemas/invoice";
-import {
-  formatCurrency,
-  parseCurrency,
-  generateInvoiceNumber,
-} from "@/utils/format";
+import { formatCurrency, parseCurrency } from "@/utils/format";
 import styled from "@emotion/styled";
-import { useEffect } from "react";
 import { format } from "date-fns";
 
 const StyledCard = styled(Card)({
   border: "1px solid #E2E8F0",
-  boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
+  borderRadius: "4px",
+  maxWidth: "1109px",
+  margin: "0 auto",
 });
 
 const FormTitle = styled(Typography)({
@@ -39,16 +35,21 @@ const FormTitle = styled(Typography)({
   fontWeight: 600,
   color: "#1E293B",
   marginBottom: "32px",
+  paddingBottom: "15px",
+  borderBottom: "1px solid #E2E8F0",
+  margin: "0 -26px 32px -26px",
+  padding: "0 26px 15px 26px",
+  fontFamily: "var(--font-inter), sans-serif",
 });
 
 const RequiredLabel = styled("span")({
   color: "#EF4444",
-  marginLeft: "2px",
+  marginLeft: "4px",
 });
 
 const FieldLabel = styled(Typography)({
   fontSize: "14px",
-  fontWeight: 500,
+  fontWeight: 600,
   color: "#1E293B",
   marginBottom: "8px",
 });
@@ -56,14 +57,21 @@ const FieldLabel = styled(Typography)({
 const StyledTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
     backgroundColor: "white",
+    borderRadius: "4px",
     "& fieldset": {
       borderColor: "#E2E8F0",
+      borderWidth: "1.5px",
     },
     "&:hover fieldset": {
       borderColor: "#CBD5E1",
+      borderWidth: "1.5px",
     },
     "&.Mui-focused fieldset": {
       borderColor: "#4F46E5",
+      borderWidth: "1.5px",
+    },
+    "& .MuiOutlinedInput-input": {
+      padding: "13px 22px",
     },
   },
   "& .MuiInputBase-input::placeholder": {
@@ -74,58 +82,72 @@ const StyledTextField = styled(TextField)({
 
 const StyledSelect = styled(Select)({
   backgroundColor: "white",
+  borderRadius: "4px",
   "& .MuiOutlinedInput-notchedOutline": {
     borderColor: "#E2E8F0",
+    borderWidth: "1.5px",
   },
   "&:hover .MuiOutlinedInput-notchedOutline": {
     borderColor: "#CBD5E1",
+    borderWidth: "1.5px",
   },
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     borderColor: "#4F46E5",
+    borderWidth: "1.5px",
   },
+  "& .MuiSelect-select": {
+    padding: "13px 22px",
+  },
+  "& .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input":
+    {
+      color: "#1E293B",
+      "&[value='']": {
+        color: "#94A3B8",
+      },
+    },
 });
 
 const SubmitButton = styled(Button)({
   padding: "12px 24px",
-  float: "right",
-  marginTop: "24px",
+  width: "30%",
+  borderRadius: "8px",
+  backgroundColor: "#4F46E5",
+  fontSize: "16px",
+  fontWeight: 500,
+  marginTop: "32px",
+  "&:hover": {
+    backgroundColor: "#4338CA",
+  },
 });
 
 export function InvoiceForm() {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<InvoiceFormData>({
     resolver: zodResolver(InvoiceSchema),
     defaultValues: {
       name: "",
       number: "",
-      dueDate: format(new Date(), "yyyy-MM-dd"),
+      dueDate: "",
       amount: 0,
-      status: "PENDING",
+      status: undefined,
     },
   });
-
-  useEffect(() => {
-    // Set auto-generated invoice number
-    setValue("number", generateInvoiceNumber());
-  }, [setValue]);
 
   const onSubmit = (data: InvoiceFormData) => {
     console.log({
       ...data,
       dueDate: format(new Date(data.dueDate), "yyyy-MM-dd"),
     });
-    // TODO: Handle form submission
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
         <StyledCard>
-          <CardContent sx={{ p: 4 }}>
+          <CardContent sx={{ py: "15px", px: "26px" }}>
             <FormTitle>Invoice Form</FormTitle>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -159,10 +181,24 @@ export function InvoiceForm() {
                     render={({ field }) => (
                       <StyledTextField
                         {...field}
+                        onFocus={(e) => {
+                          if (!e.target.value) {
+                            field.onChange("INV-");
+                          }
+                        }}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          // Remove any existing INV- prefix
+                          value = value.replace(/^INV-/, "");
+                          // Remove any non-digit characters
+                          value = value.replace(/\D/g, "");
+                          // Add INV- prefix back
+                          field.onChange(`INV-${value}`);
+                        }}
                         error={!!errors.number}
                         helperText={errors.number?.message}
                         fullWidth
-                        disabled
+                        placeholder="Enter your invoice number"
                       />
                     )}
                   />
@@ -193,17 +229,40 @@ export function InvoiceForm() {
                             error: !!errors.dueDate,
                             helperText: errors.dueDate?.message,
                             placeholder: "DD/MM/YYYY",
+                            inputProps: {
+                              readOnly: true,
+                            },
                             sx: {
                               "& .MuiOutlinedInput-root": {
                                 backgroundColor: "white",
+                                borderRadius: "4px",
+                                cursor: "pointer",
                                 "& fieldset": {
                                   borderColor: "#E2E8F0",
+                                  borderWidth: "1.5px",
                                 },
                                 "&:hover fieldset": {
                                   borderColor: "#CBD5E1",
+                                  borderWidth: "1.5px",
                                 },
                                 "&.Mui-focused fieldset": {
                                   borderColor: "#4F46E5",
+                                  borderWidth: "1.5px",
+                                },
+                                "& .MuiOutlinedInput-input": {
+                                  padding: "13px 22px",
+                                  cursor: "pointer",
+                                },
+                              },
+                            },
+                          },
+                          popper: {
+                            sx: {
+                              "& .MuiPaper-root": {
+                                width: "100%",
+                                "& .MuiCalendarPicker-root": {
+                                  width: "100%",
+                                  maxWidth: "none",
                                 },
                               },
                             },
@@ -234,30 +293,41 @@ export function InvoiceForm() {
                         helperText={errors.amount?.message}
                         fullWidth
                         placeholder="Enter your invoice amount"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Box
-                                sx={{
-                                  bgcolor: "#F1F5F9",
-                                  px: 2,
-                                  py: 1,
-                                  borderRadius: 1,
-                                  color: "#64748B",
-                                  mr: 1,
-                                }}
-                              >
-                                Rp
-                              </Box>
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            style: {
+                              paddingLeft: "80px",
+                            },
+                          },
+                        }}
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            position: "relative",
+                            "&::before": {
+                              content: '"Rp"',
+                              position: "absolute",
+                              left: 0,
+                              top: 0,
+                              bottom: 0,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              backgroundColor: "#D9D9D9",
+                              border: "1px solid #E2E8F0",
+                              borderTopLeftRadius: "4px",
+                              borderBottomLeftRadius: "4px",
+                              color: "#64748B",
+                              width: "81px",
+                              zIndex: 1,
+                            },
+                          },
                         }}
                       />
                     )}
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={6}>
                 <Box>
                   <FieldLabel>
                     Status<RequiredLabel>*</RequiredLabel>
@@ -265,10 +335,18 @@ export function InvoiceForm() {
                   <Controller
                     name="status"
                     control={control}
-                    render={({ field }) => (
+                    render={({ field: { value, ...field } }) => (
                       <FormControl error={!!errors.status} fullWidth>
-                        <StyledSelect {...field}>
-                          <MenuItem value="">Choose the status</MenuItem>
+                        <StyledSelect
+                          {...field}
+                          value={value || ""}
+                          displayEmpty
+                        >
+                          <MenuItem value="" disabled>
+                            <span style={{ color: "#94A3B8" }}>
+                              Choose the status
+                            </span>
+                          </MenuItem>
                           <MenuItem value="PAID">Paid</MenuItem>
                           <MenuItem value="UNPAID">Unpaid</MenuItem>
                           <MenuItem value="PENDING">Pending</MenuItem>
@@ -284,9 +362,11 @@ export function InvoiceForm() {
                 </Box>
               </Grid>
             </Grid>
-            <SubmitButton type="submit" variant="contained" size="large">
-              + Add Invoice
-            </SubmitButton>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <SubmitButton type="submit" variant="contained" size="large">
+                + Add Invoice
+              </SubmitButton>
+            </Box>
           </CardContent>
         </StyledCard>
       </Box>
