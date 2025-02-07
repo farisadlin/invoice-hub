@@ -27,6 +27,7 @@ import {
 } from "@/utils/format";
 import styled from "@emotion/styled";
 import { useEffect } from "react";
+import { format } from "date-fns";
 
 const StyledCard = styled(Card)({
   border: "1px solid #E2E8F0",
@@ -101,7 +102,7 @@ export function InvoiceForm() {
     defaultValues: {
       name: "",
       number: "",
-      dueDate: "",
+      dueDate: format(new Date(), "yyyy-MM-dd"),
       amount: 0,
       status: "PENDING",
     },
@@ -113,7 +114,10 @@ export function InvoiceForm() {
   }, [setValue]);
 
   const onSubmit = (data: InvoiceFormData) => {
-    console.log(data);
+    console.log({
+      ...data,
+      dueDate: format(new Date(data.dueDate), "yyyy-MM-dd"),
+    });
     // TODO: Handle form submission
   };
 
@@ -172,9 +176,15 @@ export function InvoiceForm() {
                   <Controller
                     name="dueDate"
                     control={control}
-                    render={({ field }) => (
+                    render={({ field: { value, onChange, ...field } }) => (
                       <DatePicker
                         {...field}
+                        value={value ? new Date(value) : null}
+                        onChange={(newValue) => {
+                          onChange(
+                            newValue ? format(newValue, "yyyy-MM-dd") : ""
+                          );
+                        }}
                         format="dd/MM/yyyy"
                         disablePast
                         slotProps={{
@@ -183,6 +193,20 @@ export function InvoiceForm() {
                             error: !!errors.dueDate,
                             helperText: errors.dueDate?.message,
                             placeholder: "DD/MM/YYYY",
+                            sx: {
+                              "& .MuiOutlinedInput-root": {
+                                backgroundColor: "white",
+                                "& fieldset": {
+                                  borderColor: "#E2E8F0",
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "#CBD5E1",
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "#4F46E5",
+                                },
+                              },
+                            },
                           },
                         }}
                       />
