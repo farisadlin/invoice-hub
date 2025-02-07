@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Open_Sans } from "next/font/google";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { theme } from "./theme";
 import "./globals.css";
 
 const inter = Inter({
@@ -29,7 +32,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${openSans.variable} ${openSans.className}`}
       >
-        {children}
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
