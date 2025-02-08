@@ -31,7 +31,7 @@ import {
   StyledSelect,
   SubmitButton,
 } from "./styles/InvoiceForm.styles";
-import { InvoicePageLayout } from "@/layouts/invoices/InvoicePageLayout";
+import { InvoicePageLayout } from "@/layout/invoices/InvoicePageLayout";
 
 const getStoredInvoices = () => {
   if (typeof window === "undefined") return [];

@@ -7,7 +7,7 @@ import {
 } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { InvoicePageLayout } from "@/layouts/invoices/InvoicePageLayout";
+import { InvoicePageLayout } from "@/layout/invoices/InvoicePageLayout";
 import { MenuList, MenuItemStyled } from "./styles/InvoiceList.styles";
 import { Invoice } from "@/types/invoice";
 import { EditableInvoice } from "@/components/invoices/types";

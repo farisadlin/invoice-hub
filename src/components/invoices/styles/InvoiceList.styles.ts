@@ -41,7 +41,7 @@ export const TableRow = styled(Box)(({ theme }) => ({
   borderBottom: "1px solid #E2E8F0",
   backgroundColor: "white",
   [theme.breakpoints.up("md")]: {
-    "&:last-child": {
+    "&:last-of-type": {
       borderBottom: "none",
     },
   },
@@ -52,10 +52,10 @@ export const TableRow = styled(Box)(({ theme }) => ({
     borderRadius: "8px",
     border: "1px solid #E2E8F0",
     borderBottom: "1px solid #E2E8F0",
-    "&:last-child": {
+    "&:last-of-type": {
       borderBottom: "1px solid #E2E8F0",
     },
-    "& > *:not(:first-child)": {
+    "& > *:not(:first-of-type)": {
       paddingLeft: "0",
     },
   },
