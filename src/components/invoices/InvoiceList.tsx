@@ -6,9 +6,7 @@ import {
   TextField,
   Select,
   MenuItem,
-  IconButton,
   Menu,
-  Chip,
   InputAdornment,
   FormControl,
   SelectChangeEvent,
@@ -26,169 +24,30 @@ import {
 } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { styled } from "@mui/material/styles";
 import { formatCurrency } from "@/utils/format";
 import { format } from "date-fns";
 import Link from "next/link";
 import { InvoicePageLayout } from "@/layouts/invoices/InvoicePageLayout";
 import { InvoiceFormFields } from "./InvoiceFormFields";
-
-const TableContainer = styled(Box)({
-  backgroundColor: "white",
-  borderRadius: "0",
-  border: "1px solid #E2E8F0",
-  overflow: "hidden",
-  padding: "30px",
-  "@media (max-width: 900px)": {
-    padding: "15px",
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "15px",
-  },
-  "@media (max-width: 600px)": {
-    gridTemplateColumns: "1fr",
-  },
-});
-
-const TableHeader = styled(Box)({
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
-  padding: "16px 24px",
-  backgroundColor: "#F7F9FC",
-  "& > *": {
-    color: "#1C2434",
-    fontSize: "16px",
-    fontWeight: 600,
-    textTransform: "capitalize",
-  },
-  "@media (max-width: 900px)": {
-    display: "none",
-  },
-});
-
-const TableRow = styled(Box)({
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
-  padding: "16px 24px",
-  alignItems: "center",
-  borderBottom: "1px solid #E2E8F0",
-  backgroundColor: "white",
-  "&:last-child": {
-    borderBottom: "none",
-  },
-  "@media (max-width: 900px)": {
-    gridTemplateColumns: "1fr",
-    gap: "12px",
-    padding: "16px",
-    borderRadius: "8px",
-    border: "1px solid #E2E8F0",
-    borderBottom: "1px solid #E2E8F0",
-    "& > *:not(:first-child)": {
-      paddingLeft: "0",
-    },
-  },
-});
-
-const MobileLabel = styled(Typography)({
-  display: "none",
-  color: "#64748B",
-  fontSize: "12px",
-  fontWeight: 500,
-  marginBottom: "4px",
-  "@media (max-width: 900px)": {
-    display: "block",
-  },
-});
-
-const StatusChip = styled(Chip)<{ status: "PAID" | "UNPAID" | "PENDING" }>(
-  ({ status }) => ({
-    borderRadius: "16px",
-    height: "22px",
-    fontSize: "14px",
-    padding: "14px 4px",
-    fontWeight: 500,
-    ...(status === "PAID" && {
-      backgroundColor: "rgba(33, 150, 83, 0.08)",
-      color: "#219653",
-    }),
-    ...(status === "UNPAID" && {
-      backgroundColor: "rgba(211, 64, 83, 0.08)",
-      color: "#D34053",
-    }),
-    ...(status === "PENDING" && {
-      backgroundColor: "rgba(255, 167, 11, 0.08)",
-      color: "#FFA70B",
-    }),
-  })
-);
-
-const EmptyState = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "64px 24px",
-  backgroundColor: "white",
-  borderRadius: "8px",
-  border: "1px solid #E2E8F0",
-});
-
-const EmptyStateIcon = styled(Box)({
-  width: 48,
-  height: 48,
-  borderRadius: "50%",
-  backgroundColor: "#F1F5F9",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  marginBottom: "16px",
-  "& svg": {
-    color: "#64748B",
-    fontSize: 24,
-  },
-});
-
-const ActionButton = styled(IconButton)({
-  padding: "4px",
-  "&:hover": {
-    backgroundColor: "#F1F5F9",
-  },
-});
-
-const MenuList = styled("ul")({
-  padding: "8px",
-  minWidth: "120px",
-});
-
-const MenuItemStyled = styled(MenuItem)({
-  borderRadius: "6px",
-  padding: "8px 12px",
-  gap: "8px",
-  fontSize: "14px",
-  "&:hover": {
-    backgroundColor: "#F1F5F9",
-  },
-});
-
-interface Invoice {
-  id: string;
-  name: string;
-  number: string;
-  dueDate: string;
-  amount: number;
-  status: "PAID" | "UNPAID" | "PENDING";
-}
-
-interface EditableInvoice extends Invoice {
-  isEditing?: boolean;
-}
-
-interface HeaderActionsProps {
-  search: string;
-  status: string;
-  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onStatusChange: (event: SelectChangeEvent) => void;
-}
+import {
+  TableContainer,
+  TableHeader,
+  TableRow,
+  MobileLabel,
+  StatusChip,
+  EmptyState,
+  EmptyStateIcon,
+  ActionButton,
+  MenuList,
+  MenuItemStyled,
+} from "./styles/InvoiceList.styles";
+import { Invoice } from "@/types/invoice";
+import {
+  EditableInvoice,
+  HeaderActionsProps,
+  InvoiceTableProps,
+  EmptyStateViewProps,
+} from "./types/invoice.types";
 
 function HeaderActions({
   search,
@@ -265,21 +124,6 @@ function HeaderActions({
       </FormControl>
     </Box>
   );
-}
-
-interface InvoiceTableProps {
-  invoices: EditableInvoice[];
-  onMenuOpen: (event: React.MouseEvent<HTMLElement>, id: string) => void;
-  onSave: (invoice: Invoice) => void;
-  onCancel: (id: string) => void;
-  editedInvoice: Invoice | null;
-  onFieldChange: (
-    field: keyof Invoice,
-    value: string | number | "PAID" | "UNPAID" | "PENDING"
-  ) => void;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-  setEditedInvoice: (invoice: Invoice | null) => void;
 }
 
 function InvoiceTable({
@@ -466,11 +310,6 @@ function InvoiceTable({
       </TableContainer>
     </Box>
   );
-}
-
-interface EmptyStateViewProps {
-  search: string;
-  status: string;
 }
 
 function EmptyStateView({ search, status }: EmptyStateViewProps) {
