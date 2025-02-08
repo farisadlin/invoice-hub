@@ -1,24 +1,24 @@
 import { Box, Chip, IconButton, MenuItem } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-export const TableContainer = styled(Box)({
+export const TableContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
   borderRadius: "0",
   border: "1px solid #E2E8F0",
   overflow: "hidden",
   padding: "30px",
-  "@media (max-width: 900px)": {
+  [theme.breakpoints.down("md")]: {
     padding: "15px",
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
     gap: "15px",
   },
-  "@media (max-width: 600px)": {
+  [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "1fr",
   },
-});
+}));
 
-export const TableHeader = styled(Box)({
+export const TableHeader = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
   padding: "16px 24px",
@@ -29,44 +29,48 @@ export const TableHeader = styled(Box)({
     fontWeight: 600,
     textTransform: "capitalize",
   },
-  "@media (max-width: 900px)": {
+  [theme.breakpoints.down("md")]: {
     display: "none",
   },
-});
-
-export const TableRow = styled(Box)({
+}));
+export const TableRow = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
   padding: "16px 24px",
   alignItems: "center",
   borderBottom: "1px solid #E2E8F0",
   backgroundColor: "white",
-  "&:last-child": {
-    borderBottom: "none",
+  [theme.breakpoints.up("md")]: {
+    "&:last-child": {
+      borderBottom: "none",
+    },
   },
-  "@media (max-width: 900px)": {
+  [theme.breakpoints.down("md")]: {
     gridTemplateColumns: "1fr",
     gap: "12px",
     padding: "16px",
     borderRadius: "8px",
     border: "1px solid #E2E8F0",
     borderBottom: "1px solid #E2E8F0",
+    "&:last-child": {
+      borderBottom: "1px solid #E2E8F0",
+    },
     "& > *:not(:first-child)": {
       paddingLeft: "0",
     },
   },
-});
+}));
 
-export const MobileLabel = styled(Box)({
+export const MobileLabel = styled(Box)(({ theme }) => ({
   display: "none",
   color: "#64748B",
   fontSize: "12px",
   fontWeight: 500,
   marginBottom: "4px",
-  "@media (max-width: 900px)": {
+  [theme.breakpoints.down("md")]: {
     display: "block",
   },
-});
+}));
 
 export const StatusChip = styled(Chip)<{
   status: "PAID" | "UNPAID" | "PENDING";

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { HeaderActionsProps } from "@/types/components/invoice";
+import { theme } from "@/styles/theme";
 
 export function HeaderActions({
   search,
@@ -22,7 +23,7 @@ export function HeaderActions({
       sx={{
         display: "flex",
         columnGap: "25px",
-        "@media (max-width: 900px)": {
+        [theme.breakpoints.down("md")]: {
           flexDirection: "column",
           gap: "16px",
         },

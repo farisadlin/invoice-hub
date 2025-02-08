@@ -86,7 +86,7 @@ export const StyledSelect = styled(Select)({
     },
 });
 
-export const SubmitButton = muiStyled(Button)({
+export const SubmitButton = muiStyled(Button)(({ theme }) => ({
   padding: "12px 24px",
   width: "30%",
   borderRadius: "8px",
@@ -97,7 +97,7 @@ export const SubmitButton = muiStyled(Button)({
   "&:hover": {
     backgroundColor: "#4338CA",
   },
-  "@media (max-width: 900px)": {
+  [theme.breakpoints.down("md")]: {
     width: "100%",
   },
-});
+}));
