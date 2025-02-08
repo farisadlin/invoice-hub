@@ -9,22 +9,33 @@ import {
   ListItemText,
   Typography,
   styled,
+  Drawer,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { AddCircleOutline, FormatListBulleted } from "@mui/icons-material";
+import { theme } from "@/app/theme";
+
+const DRAWER_WIDTH = 280;
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
-  width: 280,
+  width: DRAWER_WIDTH,
   height: "100vh",
   backgroundColor: "#1B2430",
   color: "white",
   padding: theme.spacing(3),
   paddingLeft: 0,
-  position: "fixed",
-  left: 0,
-  top: 0,
+  [theme.breakpoints.up("md")]: {
+    position: "fixed",
+    left: 0,
+    top: 0,
+  },
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+  },
 }));
 
 const Logo = styled(Box)({
@@ -33,6 +44,9 @@ const Logo = styled(Box)({
   gap: "8px",
   marginBottom: "48px",
   paddingLeft: "40px",
+  [theme.breakpoints.down("md")]: {
+    margin: "32px 0 0 0",
+  },
   "& svg": {
     width: 32,
     height: 32,
@@ -59,8 +73,15 @@ const MenuLabel = styled(Typography)({
   paddingLeft: "40px",
 });
 
-export function Sidebar() {
+interface SidebarProps {
+  isMobileOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ isMobileOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const menuItems = [
     {
@@ -75,8 +96,8 @@ export function Sidebar() {
     },
   ];
 
-  return (
-    <SidebarContainer>
+  const sidebarContent = (
+    <>
       <Logo>
         <Image
           src="/assets/invoice-hub-logo.svg"
@@ -93,7 +114,7 @@ export function Sidebar() {
             key={item.href}
             disablePadding
             sx={{
-              marginBottom: index === menuItems.length - 1 ? 0 : undefined, // Remove margin from last item
+              marginBottom: index === menuItems.length - 1 ? 0 : undefined,
             }}
           >
             <Link
@@ -116,6 +137,31 @@ export function Sidebar() {
           </ListItem>
         ))}
       </List>
-    </SidebarContainer>
+    </>
   );
+
+  if (isMobile) {
+    return (
+      <Drawer
+        variant="temporary"
+        open={isMobileOpen}
+        onClose={onClose}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: DRAWER_WIDTH,
+            backgroundColor: "#1B2430",
+          },
+        }}
+      >
+        {sidebarContent}
+      </Drawer>
+    );
+  }
+
+  return <SidebarContainer>{sidebarContent}</SidebarContainer>;
 }

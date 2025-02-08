@@ -8,13 +8,20 @@ import {
   Avatar,
   styled,
   Switch,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   NotificationsNone,
   KeyboardArrowDown,
   LightMode,
   Chat,
+  Menu as MenuIcon,
 } from "@mui/icons-material";
+
+interface TopbarProps {
+  onMenuClick?: () => void;
+}
 
 const TopbarContainer = styled(Box)(({ theme }) => ({
   height: 80,
@@ -33,6 +40,10 @@ const TopbarContainer = styled(Box)(({ theme }) => ({
   width: "100%",
   boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
   flex: "0 0 auto",
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(2),
+    gap: theme.spacing(2),
+  },
 }));
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
@@ -75,7 +86,7 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const UserInfo = styled(Box)({
+const UserInfo = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: "12px",
@@ -85,7 +96,12 @@ const UserInfo = styled(Box)({
   "&:hover": {
     backgroundColor: "#F1F5F9",
   },
-});
+  [theme.breakpoints.down("sm")]: {
+    "& .MuiTypography-root": {
+      display: "none",
+    },
+  },
+}));
 
 const UserName = styled(Typography)({
   fontSize: "14px",
@@ -111,21 +127,42 @@ const NotificationButton = styled(IconButton)({
   },
 });
 
-const IconWrapper = styled(Box)({
+const IconWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: "15px",
-});
+  [theme.breakpoints.down("sm")]: {
+    gap: "8px",
+  },
+}));
 
-const ThemeToggle = styled(Box)({
+const ThemeToggle = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: "8px",
-});
+  [theme.breakpoints.down("sm")]: {
+    display: "none",
+  },
+}));
 
-export function Topbar() {
+const MenuButton = styled(IconButton)(({ theme }) => ({
+  display: "none",
+  [theme.breakpoints.down("md")]: {
+    display: "flex",
+    marginRight: "auto",
+  },
+}));
+
+export function Topbar({ onMenuClick }: TopbarProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <TopbarContainer>
+      <MenuButton onClick={onMenuClick}>
+        <MenuIcon />
+      </MenuButton>
+
       <ThemeToggle>
         <LightMode sx={{ color: "#64748B", fontSize: 20 }} />
         <StyledSwitch />
@@ -152,10 +189,12 @@ export function Topbar() {
       </IconWrapper>
 
       <UserInfo>
-        <Stack>
-          <UserName>John Doe</UserName>
-          <UserRole>Verified Member</UserRole>
-        </Stack>
+        {!isMobile && (
+          <Stack>
+            <UserName>John Doe</UserName>
+            <UserRole>Verified Member</UserRole>
+          </Stack>
+        )}
         <Avatar
           src="/assets/avatar.png"
           alt="User Avatar"
