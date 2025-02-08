@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -143,6 +144,7 @@ const storeInvoice = (invoice: InvoiceFormData) => {
 
 export function InvoiceForm() {
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     control,
     handleSubmit,
@@ -159,7 +161,12 @@ export function InvoiceForm() {
     },
   });
 
-  const onSubmit = (data: InvoiceFormData) => {
+  const onSubmit = async (data: InvoiceFormData) => {
+    setIsSubmitting(true);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     const formattedData = {
       ...data,
       dueDate: format(new Date(data.dueDate), "yyyy-MM-dd"),
@@ -171,6 +178,7 @@ export function InvoiceForm() {
     // Show success message and reset form
     setOpen(true);
     reset();
+    setIsSubmitting(false);
 
     // Hide success message after 6 seconds
     setTimeout(() => {
@@ -398,8 +406,24 @@ export function InvoiceForm() {
               </Grid>
             </Grid>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <SubmitButton type="submit" variant="contained" size="large">
-                + Add Invoice
+              <SubmitButton
+                type="submit"
+                variant="contained"
+                size="large"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <CircularProgress
+                      size={16}
+                      thickness={4}
+                      sx={{ color: "white", mr: 1 }}
+                    />
+                    Adding Invoice...
+                  </>
+                ) : (
+                  "+ Add Invoice"
+                )}
               </SubmitButton>
             </Box>
           </CardContent>

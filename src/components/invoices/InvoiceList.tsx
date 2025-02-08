@@ -310,7 +310,7 @@ function InvoiceTable({
                   status={invoice.status}
                 />
               </Box>
-              <Box sx={{ color: "#1E293B" }}>
+              <Box sx={{ color: "#1E293B", fontSize: "16px" }}>
                 Rp {formatCurrency(invoice.amount)}
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
@@ -406,7 +406,7 @@ const LoadingSkeleton = () => (
           />
         </Box>
         <Box>
-          <Skeleton variant="text" width={100} height={24} />
+          <Skeleton variant="text" width={150} height={24} />
         </Box>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Skeleton variant="circular" width={32} height={32} />
