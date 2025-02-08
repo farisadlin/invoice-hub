@@ -1,5 +1,4 @@
 import { SelectChangeEvent } from "@mui/material";
-import { Invoice } from "@/types/invoice";
 
 export interface EditableInvoice extends Invoice {
   isEditing?: boolean;
@@ -30,4 +29,13 @@ export interface InvoiceTableProps {
 export interface EmptyStateViewProps {
   search: string;
   status: string;
+}
+
+export interface Invoice {
+  id: string;
+  name: string;
+  number: string;
+  dueDate: string;
+  amount: number;
+  status: "PAID" | "UNPAID" | "PENDING";
 }
