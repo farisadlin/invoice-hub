@@ -47,7 +47,7 @@ import {
   HeaderActionsProps,
   InvoiceTableProps,
   EmptyStateViewProps,
-} from "@/components/invoices/types/invoice.types";
+} from "@/components/invoices/types";
 
 function HeaderActions({
   search,

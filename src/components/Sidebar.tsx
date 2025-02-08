@@ -1,14 +1,10 @@
 "use client";
 
 import {
-  Box,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography,
-  styled,
   Drawer,
   useTheme,
   useMediaQuery,
@@ -17,66 +13,14 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { AddCircleOutline, FormatListBulleted } from "@mui/icons-material";
-import { theme } from "@/app/theme";
-
-const DRAWER_WIDTH = 280;
-
-const SidebarContainer = styled(Box)(({ theme }) => ({
-  width: DRAWER_WIDTH,
-  height: "100vh",
-  backgroundColor: "#1B2430",
-  color: "white",
-  padding: theme.spacing(3),
-  paddingLeft: 0,
-  [theme.breakpoints.up("md")]: {
-    position: "fixed",
-    left: 0,
-    top: 0,
-  },
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
-}));
-
-const Logo = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  marginBottom: "48px",
-  paddingLeft: "40px",
-  [theme.breakpoints.down("md")]: {
-    margin: "32px 0 0 0",
-  },
-  "& svg": {
-    width: 32,
-    height: 32,
-  },
-});
-
-const StyledListItemButton = styled(ListItemButton)<{
-  "data-active"?: boolean;
-}>(({ theme, "data-active": active }) => ({
-  borderRadius: theme.spacing(1),
-  marginLeft: "25px",
-  color: active ? "white" : "#94A3B8",
-  "&:hover": {
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
-  },
-}));
-
-const MenuLabel = styled(Typography)({
-  color: "#64748B",
-  fontSize: "14px",
-  fontWeight: 500,
-  marginTop: "49.52px",
-  marginBottom: "16px",
-  paddingLeft: "40px",
-});
-
-interface SidebarProps {
-  isMobileOpen?: boolean;
-  onClose?: () => void;
-}
+import { DRAWER_WIDTH } from "@/constants";
+import {
+  Logo,
+  MenuLabel,
+  StyledListItemButton,
+  SidebarContainer,
+} from "./styles/Sidebar.styles";
+import { SidebarProps } from "@/components/types";
 
 export function Sidebar({ isMobileOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();

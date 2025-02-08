@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Invoice } from "@/components/invoices/types/invoice.types";
+import { Invoice } from "@/components/invoices/types";
 import { getInvoiceFormFieldsStyles } from "./styles/InvoiceFormFields.styles";
 import { formatCurrency, parseCurrency } from "@/utils/format";
 
