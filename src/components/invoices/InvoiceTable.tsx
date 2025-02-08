@@ -19,7 +19,10 @@ import {
   StatusChip,
   ActionButton,
 } from "./styles/InvoiceList.styles";
-import { EditableInvoice, InvoiceTableProps } from "@/components";
+import {
+  EditableInvoice,
+  InvoiceTableProps,
+} from "@/components/invoices/types";
 
 export function InvoiceTable({
   invoices,
