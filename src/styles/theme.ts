@@ -80,7 +80,6 @@ const components: Components<Theme> = {
             paddingRight: "13px",
             lineHeight: "18px",
             fontWeight: 400,
-            color: colors.text.placeholder,
           },
         },
         "& .MuiInputBase-input::placeholder": {
@@ -99,7 +98,6 @@ const components: Components<Theme> = {
           padding: "13px 22px",
           lineHeight: "18px",
           fontWeight: 400,
-          color: colors.text.placeholder,
         },
       },
     },
