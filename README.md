@@ -7,7 +7,6 @@ A modern invoice management application built with Next.js, Material-UI, and Typ
 - Create and manage invoices
 - Modern and responsive UI with Material-UI
 - Form validation with React Hook Form and Zod
-- State management with Zustand
 - Built with TypeScript for type safety
 
 ## Prerequisites
@@ -60,7 +59,6 @@ npm run dev
 - TypeScript
 - React Hook Form
 - Zod for validation
-- Zustand for state management
 - Emotion for styled components
 
 ## Project Structure
