@@ -9,12 +9,12 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { InvoicePageLayout } from "@/layout/invoices/InvoicePageLayout";
 import { MenuList, MenuItemStyled } from "./styles/InvoiceList.styles";
-import { Invoice } from "@/types/invoice";
+import { Invoice } from "./types";
 import { EditableInvoice } from "@/components/invoices/types";
-import { HeaderActions } from "./components/HeaderActions";
-import { InvoiceTable } from "./components/InvoiceTable";
-import { EmptyStateView } from "./components/EmptyStateView";
-import { LoadingSkeleton } from "./components/LoadingSkeleton";
+import { HeaderActions } from "@/components/invoices/HeaderActions";
+import { InvoiceTable } from "@/components/invoices/InvoiceTable";
+import { EmptyStateView } from "@/components/invoices/EmptyStateView";
+import { LoadingSkeleton } from "@/components/invoices/LoadingSkeleton";
 import { STORAGE_KEY } from "@/constants";
 
 export function InvoiceList() {

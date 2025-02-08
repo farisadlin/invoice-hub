@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 import { format } from "date-fns";
 import { formatCurrency } from "@/utils/format";
-import { InvoiceFormFields } from "../InvoiceFormFields";
+import { InvoiceFormFields } from "./InvoiceFormFields";
 import {
   TableContainer,
   TableHeader,
@@ -18,8 +18,8 @@ import {
   MobileLabel,
   StatusChip,
   ActionButton,
-} from "../styles/InvoiceList.styles";
-import { EditableInvoice, InvoiceTableProps } from "@/types/components/invoice";
+} from "./styles/InvoiceList.styles";
+import { EditableInvoice, InvoiceTableProps } from "@/components";
 
 export function InvoiceTable({
   invoices,

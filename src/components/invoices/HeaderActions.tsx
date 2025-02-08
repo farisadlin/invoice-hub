@@ -9,7 +9,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
-import { HeaderActionsProps } from "@/types/components/invoice";
+import { HeaderActionsProps } from "@/components/invoices/types";
 import { theme } from "@/styles/theme";
 
 export function HeaderActions({

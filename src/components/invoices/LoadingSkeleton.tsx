@@ -5,7 +5,7 @@ import {
   TableContainer,
   TableHeader,
   TableRow,
-} from "../styles/InvoiceList.styles";
+} from "./styles/InvoiceList.styles";
 
 export function LoadingSkeleton() {
   return (

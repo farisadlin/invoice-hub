@@ -3,8 +3,8 @@
 import { Typography, Button } from "@mui/material";
 import { ReceiptLong as ReceiptLongIcon } from "@mui/icons-material";
 import Link from "next/link";
-import { EmptyState, EmptyStateIcon } from "../styles/InvoiceList.styles";
-import { EmptyStateViewProps } from "@/types/components/invoice";
+import { EmptyState, EmptyStateIcon } from "./styles/InvoiceList.styles";
+import { EmptyStateViewProps } from "@/components/invoices/types";
 
 export function EmptyStateView({ search, status }: EmptyStateViewProps) {
   return (
