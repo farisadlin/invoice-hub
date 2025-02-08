@@ -13,6 +13,7 @@ import {
   FormControl,
   SelectChangeEvent,
   Button,
+  Skeleton,
 } from "@mui/material";
 import {
   Search as SearchIcon,
@@ -31,8 +32,6 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { InvoicePageLayout } from "@/layouts/invoices/InvoicePageLayout";
 import { InvoiceFormFields } from "./InvoiceFormFields";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const TableContainer = styled(Box)({
   backgroundColor: "white",
@@ -380,11 +379,49 @@ function EmptyStateView({ search, status }: EmptyStateViewProps) {
   );
 }
 
+const LoadingSkeleton = () => (
+  <TableContainer>
+    <TableHeader>
+      <Box>Invoice</Box>
+      <Box>Due Date</Box>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>Status</Box>
+      <Box>Amount</Box>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>Actions</Box>
+    </TableHeader>
+    {[1, 2, 3].map((index) => (
+      <TableRow key={index}>
+        <Box>
+          <Skeleton variant="text" width={150} height={24} sx={{ mb: "3px" }} />
+          <Skeleton variant="text" width={100} height={21} />
+        </Box>
+        <Box>
+          <Skeleton variant="text" width={120} height={24} />
+        </Box>
+        <Box sx={{ textAlign: "center" }}>
+          <Skeleton
+            variant="rounded"
+            width={80}
+            height={22}
+            sx={{ display: "inline-block" }}
+          />
+        </Box>
+        <Box>
+          <Skeleton variant="text" width={100} height={24} />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Skeleton variant="circular" width={32} height={32} />
+        </Box>
+      </TableRow>
+    ))}
+  </TableContainer>
+);
+
 export function InvoiceList() {
   const [invoices, setInvoices] = useState<EditableInvoice[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
   const [editedInvoice, setEditedInvoice] = useState<Invoice | null>(null);
+  const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const router = useRouter();
   const search = searchParams.get("search") || "";
@@ -392,25 +429,31 @@ export function InvoiceList() {
 
   useEffect(() => {
     const storedInvoices = localStorage.getItem("invoices");
-    if (storedInvoices) {
-      let filteredInvoices = JSON.parse(storedInvoices);
+    setLoading(true);
 
-      if (search) {
-        filteredInvoices = filteredInvoices.filter(
-          (invoice: Invoice) =>
-            invoice.name.toLowerCase().includes(search.toLowerCase()) ||
-            invoice.number.toLowerCase().includes(search.toLowerCase())
-        );
+    // Simulate loading delay
+    setTimeout(() => {
+      if (storedInvoices) {
+        let filteredInvoices = JSON.parse(storedInvoices);
+
+        if (search) {
+          filteredInvoices = filteredInvoices.filter(
+            (invoice: Invoice) =>
+              invoice.name.toLowerCase().includes(search.toLowerCase()) ||
+              invoice.number.toLowerCase().includes(search.toLowerCase())
+          );
+        }
+
+        if (status) {
+          filteredInvoices = filteredInvoices.filter(
+            (invoice: Invoice) => invoice.status === status
+          );
+        }
+
+        setInvoices(filteredInvoices);
       }
-
-      if (status) {
-        filteredInvoices = filteredInvoices.filter(
-          (invoice: Invoice) => invoice.status === status
-        );
-      }
-
-      setInvoices(filteredInvoices);
-    }
+      setLoading(false);
+    }, 3000);
   }, [search, status]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -501,91 +544,91 @@ export function InvoiceList() {
   );
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <InvoicePageLayout title="My Invoices" headerActions={headerActions}>
-        {invoices.length > 0 ? (
-          <InvoiceTable
-            invoices={invoices}
-            onMenuOpen={handleMenuOpen}
-            onSave={handleSave}
-            onCancel={handleCancel}
-            editedInvoice={editedInvoice}
-            onFieldChange={handleFieldChange}
-          />
-        ) : (
-          <EmptyStateView search={search} status={status} />
-        )}
+    <InvoicePageLayout title="My Invoices" headerActions={headerActions}>
+      {loading ? (
+        <LoadingSkeleton />
+      ) : invoices.length > 0 ? (
+        <InvoiceTable
+          invoices={invoices}
+          onMenuOpen={handleMenuOpen}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          editedInvoice={editedInvoice}
+          onFieldChange={handleFieldChange}
+        />
+      ) : (
+        <EmptyStateView search={search} status={status} />
+      )}
 
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          PaperProps={{
-            sx: {
-              boxShadow:
-                "0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.10)",
-              mt: 1,
-            },
-          }}
-        >
-          <MenuList>
-            <MenuItemStyled
-              onClick={() => {
-                if (selectedInvoice) {
-                  const invoiceToEdit = invoices.find(
-                    (inv) => inv.id === selectedInvoice
-                  );
-                  if (invoiceToEdit) {
-                    setEditedInvoice(invoiceToEdit);
-                    handleEdit(selectedInvoice);
-                  }
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          sx: {
+            boxShadow:
+              "0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.10)",
+            mt: 1,
+          },
+        }}
+      >
+        <MenuList>
+          <MenuItemStyled
+            onClick={() => {
+              if (selectedInvoice) {
+                const invoiceToEdit = invoices.find(
+                  (inv) => inv.id === selectedInvoice
+                );
+                if (invoiceToEdit) {
+                  setEditedInvoice(invoiceToEdit);
+                  handleEdit(selectedInvoice);
                 }
-                handleMenuClose();
+              }
+              handleMenuClose();
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                color: "#1E293B",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
               }}
             >
-              <Box
-                component="span"
-                sx={{
-                  color: "#1E293B",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <EditIcon sx={{ fontSize: 20 }} />
-                Edit
-              </Box>
-            </MenuItemStyled>
-            <MenuItemStyled
-              onClick={() => {
-                handleDelete();
-                handleMenuClose();
+              <EditIcon sx={{ fontSize: 20 }} />
+              Edit
+            </Box>
+          </MenuItemStyled>
+          <MenuItemStyled
+            onClick={() => {
+              handleDelete();
+              handleMenuClose();
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                color: "#D34053",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
               }}
             >
-              <Box
-                component="span"
-                sx={{
-                  color: "#D34053",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <DeleteIcon sx={{ fontSize: 20 }} />
-                Delete
-              </Box>
-            </MenuItemStyled>
-          </MenuList>
-        </Menu>
-      </InvoicePageLayout>
-    </LocalizationProvider>
+              <DeleteIcon sx={{ fontSize: 20 }} />
+              Delete
+            </Box>
+          </MenuItemStyled>
+        </MenuList>
+      </Menu>
+    </InvoicePageLayout>
   );
 }
