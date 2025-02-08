@@ -453,7 +453,7 @@ export function InvoiceList() {
         setInvoices(filteredInvoices);
       }
       setLoading(false);
-    }, 3000);
+    }, 1000);
   }, [search, status]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

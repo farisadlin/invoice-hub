@@ -39,16 +39,16 @@ const Logo = styled(Box)({
   },
 });
 
-const StyledListItemButton = styled(ListItemButton)<{ active?: boolean }>(
-  ({ theme, active }) => ({
-    borderRadius: theme.spacing(1),
-    marginLeft: "25px",
-    color: active ? "white" : "#94A3B8",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.12)",
-    },
-  })
-);
+const StyledListItemButton = styled(ListItemButton)<{
+  "data-active"?: boolean;
+}>(({ theme, "data-active": active }) => ({
+  borderRadius: theme.spacing(1),
+  marginLeft: "25px",
+  color: active ? "white" : "#94A3B8",
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+  },
+}));
 
 const MenuLabel = styled(Typography)({
   color: "#64748B",
@@ -100,7 +100,7 @@ export function Sidebar() {
               href={item.href}
               style={{ width: "100%", textDecoration: "none" }}
             >
-              <StyledListItemButton active={pathname === item.href}>
+              <StyledListItemButton data-active={pathname === item.href}>
                 <ListItemIcon sx={{ color: "inherit", minWidth: 40 }}>
                   {item.icon}
                 </ListItemIcon>
