@@ -26,6 +26,7 @@ import styled from "@emotion/styled";
 import { format } from "date-fns";
 import { useState } from "react";
 import CheckIcon from "@mui/icons-material/Check";
+import { styled as muiStyled } from "@mui/material/styles";
 
 const StyledCard = styled(Card)({
   border: "1px solid #E2E8F0",
@@ -111,7 +112,7 @@ const StyledSelect = styled(Select)({
     },
 });
 
-const SubmitButton = styled(Button)({
+const SubmitButton = muiStyled(Button)({
   padding: "12px 24px",
   width: "30%",
   borderRadius: "8px",
@@ -121,6 +122,9 @@ const SubmitButton = styled(Button)({
   marginTop: "32px",
   "&:hover": {
     backgroundColor: "#4338CA",
+  },
+  "@media (max-width: 900px)": {
+    width: "100%",
   },
 });
 
