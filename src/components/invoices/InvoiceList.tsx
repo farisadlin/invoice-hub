@@ -433,6 +433,13 @@ function InvoiceTable({
                         }
                       }}
                       size="small"
+                      disabled={invoices.some((inv) => inv.isEditing)}
+                      sx={{
+                        "&.Mui-disabled": {
+                          opacity: 0.5,
+                          backgroundColor: "transparent",
+                        },
+                      }}
                     >
                       <EditIcon sx={{ fontSize: 20, color: "#1E293B" }} />
                     </ActionButton>
@@ -637,11 +644,16 @@ export function InvoiceList() {
   };
 
   const handleEdit = (id: string) => {
-    setInvoices(
-      invoices.map((invoice) =>
-        invoice.id === id ? { ...invoice, isEditing: true } : invoice
-      )
-    );
+    // Check if any invoice is currently being edited
+    const isAnyInvoiceEditing = invoices.some((invoice) => invoice.isEditing);
+
+    if (!isAnyInvoiceEditing) {
+      setInvoices(
+        invoices.map((invoice) =>
+          invoice.id === id ? { ...invoice, isEditing: true } : invoice
+        )
+      );
+    }
   };
 
   const handleSave = (updatedInvoice: Invoice) => {
@@ -733,6 +745,13 @@ export function InvoiceList() {
                 }
               }
               handleMenuClose();
+            }}
+            disabled={invoices.some((inv) => inv.isEditing)}
+            sx={{
+              "&.Mui-disabled": {
+                opacity: 0.5,
+                pointerEvents: "none",
+              },
             }}
           >
             <Box
