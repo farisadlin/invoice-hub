@@ -40,6 +40,12 @@ export function Sidebar({ isMobileOpen = false, onClose }: SidebarProps) {
     },
   ];
 
+  const handleMenuClick = () => {
+    if (isMobile && onClose) {
+      onClose();
+    }
+  };
+
   const sidebarContent = (
     <>
       <Logo>
@@ -64,6 +70,7 @@ export function Sidebar({ isMobileOpen = false, onClose }: SidebarProps) {
             <Link
               href={item.href}
               style={{ width: "100%", textDecoration: "none" }}
+              onClick={handleMenuClick}
             >
               <StyledListItemButton data-active={pathname === item.href}>
                 <ListItemIcon sx={{ color: "inherit", minWidth: 40 }}>

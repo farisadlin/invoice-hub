@@ -9,6 +9,38 @@ A modern invoice management application built with Next.js, Material-UI, and Typ
 - Form validation with React Hook Form and Zod
 - Built with TypeScript for type safety
 
+## Live Demo & Screenshots
+
+🌐 **Live Demo**: [Invoice Hub](https://invoice-hub-mu.vercel.app)
+
+### Screenshots
+
+#### Dashboard & Invoice List
+
+![Invoice List](public/assets/screenshots/invoice-list.png)
+
+- Clean and intuitive interface
+- Quick status filtering
+- Search functionality
+- Responsive design
+
+#### Create Invoice
+
+![Create Invoice](public/assets/screenshots/create-invoice.png)
+
+- User-friendly form
+- Real-time validation
+- Date picker integration
+- Currency formatting
+
+#### Mobile View
+
+![Mobile View](public/assets/screenshots/mobile-view.png)
+
+- Fully responsive design
+- Optimized for mobile devices
+- Easy navigation
+
 ## Technical Decisions
 
 ### Project Structure
