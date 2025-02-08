@@ -7,5 +7,6 @@ export const formatCurrency = (value: number): string => {
 };
 
 export const parseCurrency = (value: string): number => {
-  return Number(value.replace(/[^\d]/g, ""));
+  const parsed = Number(value.replace(/[^\d]/g, ""));
+  return isNaN(parsed) ? 0 : parsed;
 };

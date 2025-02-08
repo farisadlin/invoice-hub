@@ -18,6 +18,10 @@ import {
   Search as SearchIcon,
   Menu as MenuIcon,
   ReceiptLong as ReceiptLongIcon,
+  Edit as EditIcon,
+  Close as CloseIcon,
+  Check as CheckIcon,
+  DeleteOutline as DeleteIcon,
 } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -26,6 +30,9 @@ import { formatCurrency } from "@/utils/format";
 import { format } from "date-fns";
 import Link from "next/link";
 import { InvoicePageLayout } from "@/layouts/invoices/InvoicePageLayout";
+import { InvoiceFormFields } from "./InvoiceFormFields";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const TableContainer = styled(Box)({
   backgroundColor: "white",
@@ -107,6 +114,28 @@ const EmptyStateIcon = styled(Box)({
   },
 });
 
+const ActionButton = styled(IconButton)({
+  padding: "4px",
+  "&:hover": {
+    backgroundColor: "#F1F5F9",
+  },
+});
+
+const MenuList = styled("ul")({
+  padding: "8px",
+  minWidth: "120px",
+});
+
+const MenuItemStyled = styled(MenuItem)({
+  borderRadius: "6px",
+  padding: "8px 12px",
+  gap: "8px",
+  fontSize: "14px",
+  "&:hover": {
+    backgroundColor: "#F1F5F9",
+  },
+});
+
 interface Invoice {
   id: string;
   name: string;
@@ -114,6 +143,10 @@ interface Invoice {
   dueDate: string;
   amount: number;
   status: "PAID" | "UNPAID" | "PENDING";
+}
+
+interface EditableInvoice extends Invoice {
+  isEditing?: boolean;
 }
 
 interface HeaderActionsProps {
@@ -167,11 +200,35 @@ function HeaderActions({
 }
 
 interface InvoiceTableProps {
-  invoices: Invoice[];
+  invoices: EditableInvoice[];
   onMenuOpen: (event: React.MouseEvent<HTMLElement>, id: string) => void;
+  onSave: (invoice: Invoice) => void;
+  onCancel: (id: string) => void;
+  editedInvoice: Invoice | null;
+  onFieldChange: (
+    field: keyof Invoice,
+    value: string | number | "PAID" | "UNPAID" | "PENDING"
+  ) => void;
 }
 
-function InvoiceTable({ invoices, onMenuOpen }: InvoiceTableProps) {
+function InvoiceTable({
+  invoices,
+  onMenuOpen,
+  onSave,
+  onCancel,
+  editedInvoice,
+  onFieldChange,
+}: InvoiceTableProps) {
+  const handleSave = (invoice: EditableInvoice) => {
+    if (editedInvoice) {
+      const savedInvoice = {
+        ...invoice,
+        ...editedInvoice,
+      };
+      onSave(savedInvoice);
+    }
+  };
+
   return (
     <TableContainer>
       <TableHeader>
@@ -183,40 +240,66 @@ function InvoiceTable({ invoices, onMenuOpen }: InvoiceTableProps) {
       </TableHeader>
       {invoices.map((invoice) => (
         <TableRow key={invoice.id}>
-          <Box>
-            <Typography
-              sx={{
-                fontWeight: 400,
-                color: "#1C2434",
-                fontSize: "16px",
-                mb: "3px",
-              }}
-            >
-              {invoice.name}
-            </Typography>
-            <Typography sx={{ color: "#64748B", fontSize: "14px" }}>
-              {invoice.number}
-            </Typography>
-          </Box>
-          <Box sx={{ color: "#1E293B" }}>
-            {format(new Date(invoice.dueDate), "MMM dd, yyyy")}
-          </Box>
-          <Box sx={{ textAlign: "center" }}>
-            <StatusChip
-              label={
-                invoice.status.charAt(0) + invoice.status.slice(1).toLowerCase()
-              }
-              status={invoice.status}
-            />
-          </Box>
-          <Box sx={{ color: "#1E293B" }}>
-            Rp {formatCurrency(invoice.amount)}
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <IconButton size="small" onClick={(e) => onMenuOpen(e, invoice.id)}>
-              <MenuIcon />
-            </IconButton>
-          </Box>
+          {invoice.isEditing ? (
+            <>
+              <Box sx={{ gridColumn: "1 / -2" }}>
+                <InvoiceFormFields
+                  values={editedInvoice || invoice}
+                  onChange={onFieldChange}
+                  isInline
+                />
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+                <ActionButton onClick={() => handleSave(invoice)} size="small">
+                  <CheckIcon sx={{ fontSize: 20, color: "#219653" }} />
+                </ActionButton>
+                <ActionButton onClick={() => onCancel(invoice.id)} size="small">
+                  <CloseIcon sx={{ fontSize: 20, color: "#D34053" }} />
+                </ActionButton>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box>
+                <Typography
+                  sx={{
+                    fontWeight: 400,
+                    color: "#1C2434",
+                    fontSize: "16px",
+                    mb: "3px",
+                  }}
+                >
+                  {invoice.name}
+                </Typography>
+                <Typography sx={{ color: "#64748B", fontSize: "14px" }}>
+                  {invoice.number}
+                </Typography>
+              </Box>
+              <Box sx={{ color: "#1E293B" }}>
+                {format(new Date(invoice.dueDate), "MMM dd, yyyy")}
+              </Box>
+              <Box sx={{ textAlign: "center" }}>
+                <StatusChip
+                  label={
+                    invoice.status.charAt(0) +
+                    invoice.status.slice(1).toLowerCase()
+                  }
+                  status={invoice.status}
+                />
+              </Box>
+              <Box sx={{ color: "#1E293B" }}>
+                Rp {formatCurrency(invoice.amount)}
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+                <ActionButton
+                  onClick={(e) => onMenuOpen(e, invoice.id)}
+                  size="small"
+                >
+                  <MenuIcon sx={{ fontSize: 20 }} />
+                </ActionButton>
+              </Box>
+            </>
+          )}
         </TableRow>
       ))}
     </TableContainer>
@@ -274,9 +357,10 @@ function EmptyStateView({ search, status }: EmptyStateViewProps) {
 }
 
 export function InvoiceList() {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [invoices, setInvoices] = useState<EditableInvoice[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
+  const [editedInvoice, setEditedInvoice] = useState<Invoice | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const search = searchParams.get("search") || "";
@@ -348,6 +432,41 @@ export function InvoiceList() {
     }
   };
 
+  const handleEdit = (id: string) => {
+    setInvoices(
+      invoices.map((invoice) =>
+        invoice.id === id ? { ...invoice, isEditing: true } : invoice
+      )
+    );
+  };
+
+  const handleSave = (updatedInvoice: Invoice) => {
+    const updatedInvoices = invoices.map((invoice) =>
+      invoice.id === updatedInvoice.id
+        ? { ...updatedInvoice, isEditing: false }
+        : invoice
+    );
+    setInvoices(updatedInvoices);
+    localStorage.setItem("invoices", JSON.stringify(updatedInvoices));
+  };
+
+  const handleCancel = (id: string) => {
+    setInvoices(
+      invoices.map((invoice) =>
+        invoice.id === id ? { ...invoice, isEditing: false } : invoice
+      )
+    );
+  };
+
+  const handleFieldChange = (
+    field: keyof Invoice,
+    value: string | number | "PAID" | "UNPAID" | "PENDING"
+  ) => {
+    if (editedInvoice) {
+      setEditedInvoice({ ...editedInvoice, [field]: value });
+    }
+  };
+
   const headerActions = (
     <HeaderActions
       search={search}
@@ -358,30 +477,91 @@ export function InvoiceList() {
   );
 
   return (
-    <InvoicePageLayout title="My Invoices" headerActions={headerActions}>
-      {invoices.length > 0 ? (
-        <InvoiceTable invoices={invoices} onMenuOpen={handleMenuOpen} />
-      ) : (
-        <EmptyStateView search={search} status={status} />
-      )}
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <InvoicePageLayout title="My Invoices" headerActions={headerActions}>
+        {invoices.length > 0 ? (
+          <InvoiceTable
+            invoices={invoices}
+            onMenuOpen={handleMenuOpen}
+            onSave={handleSave}
+            onCancel={handleCancel}
+            editedInvoice={editedInvoice}
+            onFieldChange={handleFieldChange}
+          />
+        ) : (
+          <EmptyStateView search={search} status={status} />
+        )}
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <MenuItem onClick={handleDelete} sx={{ color: "#EF4444" }}>
-          Delete
-        </MenuItem>
-      </Menu>
-    </InvoicePageLayout>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          PaperProps={{
+            sx: {
+              boxShadow:
+                "0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.10)",
+              mt: 1,
+            },
+          }}
+        >
+          <MenuList>
+            <MenuItemStyled
+              onClick={() => {
+                if (selectedInvoice) {
+                  const invoiceToEdit = invoices.find(
+                    (inv) => inv.id === selectedInvoice
+                  );
+                  if (invoiceToEdit) {
+                    setEditedInvoice(invoiceToEdit);
+                    handleEdit(selectedInvoice);
+                  }
+                }
+                handleMenuClose();
+              }}
+            >
+              <Box
+                component="span"
+                sx={{
+                  color: "#1E293B",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <EditIcon sx={{ fontSize: 20 }} />
+                Edit
+              </Box>
+            </MenuItemStyled>
+            <MenuItemStyled
+              onClick={() => {
+                handleDelete();
+                handleMenuClose();
+              }}
+            >
+              <Box
+                component="span"
+                sx={{
+                  color: "#D34053",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <DeleteIcon sx={{ fontSize: 20 }} />
+                Delete
+              </Box>
+            </MenuItemStyled>
+          </MenuList>
+        </Menu>
+      </InvoicePageLayout>
+    </LocalizationProvider>
   );
 }
