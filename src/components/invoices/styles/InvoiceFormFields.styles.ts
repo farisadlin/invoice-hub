@@ -21,5 +21,6 @@ export const getInvoiceFormFieldsStyles = (theme: Theme) => ({
   },
   currencyPrefix: {
     color: theme.palette.text.secondary,
+    marginRight: "4px",
   },
 });

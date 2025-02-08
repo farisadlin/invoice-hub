@@ -12,6 +12,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Invoice } from "@/types/invoice";
 import { getInvoiceFormFieldsStyles } from "./styles/InvoiceFormFields.styles";
+import { formatCurrency, parseCurrency } from "@/utils/format";
 
 interface InvoiceFormFieldsProps {
   values: Invoice;
@@ -93,9 +94,11 @@ export function InvoiceFormFields({
         />
         <TextField
           label="Amount"
-          type="number"
-          value={values.amount}
-          onChange={(e) => onChange("amount", Number(e.target.value))}
+          value={values.amount ? formatCurrency(values.amount) : ""}
+          onChange={(e) => {
+            const parsed = parseCurrency(e.target.value);
+            onChange("amount", parsed || 0);
+          }}
           error={!!errors.amount}
           helperText={errors.amount}
           fullWidth
