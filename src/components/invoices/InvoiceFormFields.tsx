@@ -41,9 +41,9 @@ export function InvoiceFormFields({
 
   const handleNumberChange = (value: string) => {
     // Remove any existing INV prefix
-    const cleanValue = value.replace(/^INV-?/, "");
-    // Add INV- prefix
-    const formattedValue = `INV-${cleanValue}`;
+    const cleanValue = value.replace(/^INV?/, "");
+    // Add INV prefix
+    const formattedValue = `INV${cleanValue}`;
     onChange("number", formattedValue);
   };
 
