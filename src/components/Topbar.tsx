@@ -136,14 +136,11 @@ const IconWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ThemeToggle = styled(Box)(({ theme }) => ({
+const ThemeToggle = styled(Box)({
   display: "flex",
   alignItems: "center",
   gap: "8px",
-  [theme.breakpoints.down("sm")]: {
-    display: "none",
-  },
-}));
+});
 
 const MenuButton = styled(IconButton)(({ theme }) => ({
   display: "none",
