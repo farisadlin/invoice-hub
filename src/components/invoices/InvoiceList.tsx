@@ -39,6 +39,15 @@ const TableContainer = styled(Box)({
   border: "1px solid #E2E8F0",
   overflow: "hidden",
   padding: "30px",
+  "@media (max-width: 900px)": {
+    padding: "15px",
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "15px",
+  },
+  "@media (max-width: 600px)": {
+    gridTemplateColumns: "1fr",
+  },
 });
 
 const TableHeader = styled(Box)({
@@ -52,6 +61,9 @@ const TableHeader = styled(Box)({
     fontWeight: 600,
     textTransform: "capitalize",
   },
+  "@media (max-width: 900px)": {
+    display: "none",
+  },
 });
 
 const TableRow = styled(Box)({
@@ -60,8 +72,31 @@ const TableRow = styled(Box)({
   padding: "16px 24px",
   alignItems: "center",
   borderBottom: "1px solid #E2E8F0",
+  backgroundColor: "white",
   "&:last-child": {
     borderBottom: "none",
+  },
+  "@media (max-width: 900px)": {
+    gridTemplateColumns: "1fr",
+    gap: "12px",
+    padding: "16px",
+    borderRadius: "8px",
+    border: "1px solid #E2E8F0",
+    borderBottom: "1px solid #E2E8F0",
+    "& > *:not(:first-child)": {
+      paddingLeft: "0",
+    },
+  },
+});
+
+const MobileLabel = styled(Typography)({
+  display: "none",
+  color: "#64748B",
+  fontSize: "12px",
+  fontWeight: 500,
+  marginBottom: "4px",
+  "@media (max-width: 900px)": {
+    display: "block",
   },
 });
 
@@ -162,13 +197,22 @@ function HeaderActions({
   onStatusChange,
 }: HeaderActionsProps) {
   return (
-    <Box sx={{ display: "flex", columnGap: "25px" }}>
+    <Box
+      sx={{
+        display: "flex",
+        columnGap: "25px",
+        "@media (max-width: 900px)": {
+          flexDirection: "column",
+          gap: "16px",
+        },
+      }}
+    >
       <TextField
         placeholder="Search"
         value={search}
         onChange={onSearchChange}
         sx={{
-          width: 216,
+          width: { xs: "100%", md: 216 },
           backgroundColor: "white",
           "& .MuiOutlinedInput-root": {
             height: "39.55px",
@@ -193,7 +237,7 @@ function HeaderActions({
           ),
         }}
       />
-      <FormControl sx={{ width: 135 }}>
+      <FormControl sx={{ width: { xs: "100%", md: 135 } }}>
         <Select
           value={status}
           onChange={onStatusChange}
@@ -232,6 +276,9 @@ interface InvoiceTableProps {
     field: keyof Invoice,
     value: string | number | "PAID" | "UNPAID" | "PENDING"
   ) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
+  setEditedInvoice: (invoice: Invoice | null) => void;
 }
 
 function InvoiceTable({
@@ -241,6 +288,9 @@ function InvoiceTable({
   onCancel,
   editedInvoice,
   onFieldChange,
+  onEdit,
+  onDelete,
+  setEditedInvoice,
 }: InvoiceTableProps) {
   const handleSave = (invoice: EditableInvoice) => {
     if (editedInvoice) {
@@ -253,7 +303,7 @@ function InvoiceTable({
   };
 
   return (
-    <TableContainer>
+    <Box>
       <TableHeader>
         <Box>Invoice</Box>
         <Box>Due Date</Box>
@@ -261,71 +311,133 @@ function InvoiceTable({
         <Box>Amount</Box>
         <Box sx={{ display: "flex", justifyContent: "center" }}>Actions</Box>
       </TableHeader>
-      {invoices.map((invoice) => (
-        <TableRow key={invoice.id}>
-          {invoice.isEditing ? (
-            <>
-              <Box sx={{ gridColumn: "1 / -2" }}>
-                <InvoiceFormFields
-                  values={editedInvoice || invoice}
-                  onChange={onFieldChange}
-                  isInline
-                />
-              </Box>
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-                <ActionButton onClick={() => handleSave(invoice)} size="small">
-                  <CheckIcon sx={{ fontSize: 20, color: "#219653" }} />
-                </ActionButton>
-                <ActionButton onClick={() => onCancel(invoice.id)} size="small">
-                  <CloseIcon sx={{ fontSize: 20, color: "#D34053" }} />
-                </ActionButton>
-              </Box>
-            </>
-          ) : (
-            <>
-              <Box>
-                <Typography
+      <TableContainer>
+        {invoices.map((invoice) => (
+          <TableRow key={invoice.id}>
+            {invoice.isEditing ? (
+              <>
+                <Box sx={{ gridColumn: { xs: "1", md: "1 / -2" } }}>
+                  <InvoiceFormFields
+                    values={editedInvoice || invoice}
+                    onChange={onFieldChange}
+                    isInline
+                  />
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+                  <ActionButton
+                    onClick={() => handleSave(invoice)}
+                    size="small"
+                  >
+                    <CheckIcon sx={{ fontSize: 20, color: "#219653" }} />
+                  </ActionButton>
+                  <ActionButton
+                    onClick={() => onCancel(invoice.id)}
+                    size="small"
+                  >
+                    <CloseIcon sx={{ fontSize: 20, color: "#D34053" }} />
+                  </ActionButton>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box>
+                  <MobileLabel>Invoice Details</MobileLabel>
+                  <Typography
+                    sx={{
+                      fontWeight: 400,
+                      color: "#1C2434",
+                      fontSize: "16px",
+                      mb: "3px",
+                    }}
+                  >
+                    {invoice.name}
+                  </Typography>
+                  <Typography sx={{ color: "#64748B", fontSize: "14px" }}>
+                    {invoice.number}
+                  </Typography>
+                </Box>
+                <Box>
+                  <MobileLabel>Due Date</MobileLabel>
+                  <Typography sx={{ color: "#1E293B" }}>
+                    {format(new Date(invoice.dueDate), "MMM dd, yyyy")}
+                  </Typography>
+                </Box>
+                <Box
                   sx={{
-                    fontWeight: 400,
-                    color: "#1C2434",
-                    fontSize: "16px",
-                    mb: "3px",
+                    textAlign: { xs: "left", md: "center" },
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    alignItems: { xs: "flex-start", md: "center" },
+                    justifyContent: { md: "center" },
                   }}
                 >
-                  {invoice.name}
-                </Typography>
-                <Typography sx={{ color: "#64748B", fontSize: "14px" }}>
-                  {invoice.number}
-                </Typography>
-              </Box>
-              <Box sx={{ color: "#1E293B" }}>
-                {format(new Date(invoice.dueDate), "MMM dd, yyyy")}
-              </Box>
-              <Box sx={{ textAlign: "center" }}>
-                <StatusChip
-                  label={
-                    invoice.status.charAt(0) +
-                    invoice.status.slice(1).toLowerCase()
-                  }
-                  status={invoice.status}
-                />
-              </Box>
-              <Box sx={{ color: "#1E293B", fontSize: "16px" }}>
-                Rp {formatCurrency(invoice.amount)}
-              </Box>
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-                <ActionButton
-                  onClick={(e) => onMenuOpen(e, invoice.id)}
-                  size="small"
+                  <MobileLabel>Status</MobileLabel>
+                  <StatusChip
+                    label={
+                      invoice.status.charAt(0) +
+                      invoice.status.slice(1).toLowerCase()
+                    }
+                    status={invoice.status}
+                  />
+                </Box>
+                <Box>
+                  <MobileLabel>Amount</MobileLabel>
+                  <Typography sx={{ color: "#1E293B", fontSize: "16px" }}>
+                    Rp {formatCurrency(invoice.amount)}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    justifyContent: { xs: "flex-start", md: "center" },
+                    gap: 1,
+                  }}
                 >
-                  <MenuIcon sx={{ fontSize: 20 }} />
-                </ActionButton>
-              </Box>
-            </>
-          )}
-        </TableRow>
-      ))}
-    </TableContainer>
+                  <Box>
+                    <MobileLabel>Actions</MobileLabel>
+                    <ActionButton
+                      onClick={(e) => onMenuOpen(e, invoice.id)}
+                      size="small"
+                      sx={{ display: { xs: "none", md: "inline-flex" } }}
+                    >
+                      <MenuIcon sx={{ fontSize: 20 }} />
+                    </ActionButton>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: { xs: "flex", md: "none" },
+                      gap: 1,
+                    }}
+                  >
+                    <ActionButton
+                      onClick={() => {
+                        const invoiceToEdit = invoices.find(
+                          (inv) => inv.id === invoice.id
+                        );
+                        if (invoiceToEdit) {
+                          setEditedInvoice(invoiceToEdit);
+                          onEdit(invoice.id);
+                        }
+                      }}
+                      size="small"
+                    >
+                      <EditIcon sx={{ fontSize: 20, color: "#1E293B" }} />
+                    </ActionButton>
+                    <ActionButton
+                      onClick={() => onDelete(invoice.id)}
+                      size="small"
+                    >
+                      <DeleteIcon sx={{ fontSize: 20, color: "#D34053" }} />
+                    </ActionButton>
+                  </Box>
+                </Box>
+              </>
+            )}
+          </TableRow>
+        ))}
+      </TableContainer>
+    </Box>
   );
 }
 
@@ -488,15 +600,16 @@ export function InvoiceList() {
     setSelectedInvoice(null);
   };
 
-  const handleDelete = () => {
-    if (selectedInvoice) {
+  const handleDelete = (id?: string) => {
+    const invoiceIdToDelete = id || selectedInvoice;
+    if (invoiceIdToDelete) {
       // Get all invoices from local storage
       const storedInvoices = localStorage.getItem("invoices");
       const allInvoices = storedInvoices ? JSON.parse(storedInvoices) : [];
 
       // Remove the selected invoice
       const updatedStoredInvoices = allInvoices.filter(
-        (invoice: Invoice) => invoice.id !== selectedInvoice
+        (invoice: Invoice) => invoice.id !== invoiceIdToDelete
       );
 
       // Update local storage with all invoices
@@ -504,7 +617,7 @@ export function InvoiceList() {
 
       // Update the filtered view
       const updatedFilteredInvoices = invoices.filter(
-        (invoice) => invoice.id !== selectedInvoice
+        (invoice) => invoice.id !== invoiceIdToDelete
       );
       setInvoices(updatedFilteredInvoices);
       handleMenuClose();
@@ -567,6 +680,9 @@ export function InvoiceList() {
           onCancel={handleCancel}
           editedInvoice={editedInvoice}
           onFieldChange={handleFieldChange}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          setEditedInvoice={setEditedInvoice}
         />
       ) : (
         <EmptyStateView search={search} status={status} />
