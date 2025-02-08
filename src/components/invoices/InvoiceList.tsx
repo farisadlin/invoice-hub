@@ -316,14 +316,26 @@ function InvoiceTable({
           <TableRow key={invoice.id}>
             {invoice.isEditing ? (
               <>
-                <Box sx={{ gridColumn: { xs: "1", md: "1 / -2" } }}>
+                <Box
+                  sx={{
+                    gridColumn: { xs: "1", md: "1 / -2" },
+                    mb: { xs: 2, md: 0 },
+                  }}
+                >
                   <InvoiceFormFields
                     values={editedInvoice || invoice}
                     onChange={onFieldChange}
                     isInline
                   />
                 </Box>
-                <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: { xs: "flex-start", md: "center" },
+                    gap: 1,
+                    mt: { xs: 2, md: 0 },
+                  }}
+                >
                   <ActionButton
                     onClick={() => handleSave(invoice)}
                     size="small"

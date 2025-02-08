@@ -4,7 +4,10 @@ export const getInvoiceFormFieldsStyles = (theme: Theme) => ({
   container: {
     display: "grid",
     gridTemplateColumns: {
-      inline: "1fr 1fr 1fr",
+      inline: {
+        xs: "1fr",
+        md: "1fr 1fr 1fr",
+      },
       default: "1fr",
     },
     gap: 2,
