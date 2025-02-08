@@ -1,7 +1,7 @@
 import { Box, ListItemButton, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DRAWER_WIDTH } from "@/constants";
-import { theme } from "@/app/theme";
+import { theme } from "@/styles/theme";
 
 export const SidebarContainer = styled(Box)(({ theme }) => ({
   width: DRAWER_WIDTH,

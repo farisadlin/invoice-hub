@@ -4,7 +4,6 @@ import { Box, Stack, Avatar, useTheme, useMediaQuery } from "@mui/material";
 import {
   NotificationsNone,
   KeyboardArrowDown,
-  LightMode,
   Chat,
   Menu as MenuIcon,
 } from "@mui/icons-material";
@@ -32,7 +31,6 @@ export function Topbar({ onMenuClick }: TopbarProps) {
       </MenuButton>
 
       <ThemeToggle>
-        <LightMode sx={{ color: "#64748B", fontSize: 20 }} />
         <StyledSwitch />
       </ThemeToggle>
 
