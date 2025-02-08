@@ -218,17 +218,17 @@ export function InvoiceForm() {
                         {...field}
                         onFocus={(e) => {
                           if (!e.target.value) {
-                            field.onChange("INV-");
+                            field.onChange("INV");
                           }
                         }}
                         onChange={(e) => {
                           let value = e.target.value;
-                          // Remove any existing INV- prefix
-                          value = value.replace(/^INV-/, "");
+                          // Remove any existing INV prefix
+                          value = value.replace(/^INV/, "");
                           // Remove any non-digit characters
                           value = value.replace(/\D/g, "");
-                          // Add INV- prefix back
-                          field.onChange(`INV-${value}`);
+                          // Add INV prefix back
+                          field.onChange(`INV${value}`);
                         }}
                         error={!!errors.number}
                         helperText={errors.number?.message}

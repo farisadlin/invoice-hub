@@ -4,19 +4,13 @@ import { isValid, parseISO } from "date-fns";
 // Invoice schemas will be defined here
 
 export const InvoiceSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Invoice name is required")
-    .regex(
-      /^[a-zA-Z0-9\s-]+$/,
-      "Invoice name can only contain letters, numbers, spaces, and hyphens"
-    ),
+  name: z.string().min(1, "Invoice name is required"),
   number: z
     .string()
     .min(1, "Invoice number is required")
     .regex(
-      /^INV-\d+$/,
-      "Invoice number must start with 'INV-' followed by numbers"
+      /^INV\d+$/,
+      "Invoice number must start with 'INV' followed by numbers"
     ),
   dueDate: z
     .string()

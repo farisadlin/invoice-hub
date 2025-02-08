@@ -1,7 +1,7 @@
+"use client";
+
+import { InvoiceList } from "@/components/invoices/InvoiceList";
+
 export default function InvoiceListPage() {
-  return (
-    <div>
-      <h1>Invoices</h1>
-    </div>
-  );
+  return <InvoiceList />;
 }
