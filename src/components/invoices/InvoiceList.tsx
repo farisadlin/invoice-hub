@@ -163,7 +163,7 @@ function HeaderActions({
   onStatusChange,
 }: HeaderActionsProps) {
   return (
-    <Box sx={{ display: "flex", gap: 2 }}>
+    <Box sx={{ display: "flex", columnGap: "25px" }}>
       <TextField
         placeholder="Search"
         value={search}
@@ -171,6 +171,20 @@ function HeaderActions({
         sx={{
           width: 216,
           backgroundColor: "white",
+          "& .MuiOutlinedInput-root": {
+            height: "39.55px",
+            borderRadius: "10px",
+            fontSize: "12px",
+            "& fieldset": {
+              border: "none",
+            },
+            "&:hover fieldset": {
+              border: "none",
+            },
+            "&.Mui-focused fieldset": {
+              border: "none",
+            },
+          },
         }}
         InputProps={{
           startAdornment: (
@@ -186,7 +200,17 @@ function HeaderActions({
           onChange={onStatusChange}
           displayEmpty
           sx={{
-            backgroundColor: "white",
+            borderRadius: "10px",
+            fontSize: "12px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
           }}
         >
           <MenuItem value="">All Status</MenuItem>
