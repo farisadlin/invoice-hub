@@ -213,6 +213,7 @@ function HeaderActions({
         onChange={onSearchChange}
         sx={{
           width: { xs: "100%", md: 216 },
+          borderRadius: "10px",
           backgroundColor: "white",
           "& .MuiOutlinedInput-root": {
             height: "39.55px",
@@ -331,7 +332,7 @@ function InvoiceTable({
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: { xs: "flex-start", md: "center" },
+                    justifyContent: { xs: "center", md: "center" },
                     gap: 1,
                     mt: { xs: 2, md: 0 },
                   }}
@@ -446,6 +447,13 @@ function InvoiceTable({
                     <ActionButton
                       onClick={() => onDelete(invoice.id)}
                       size="small"
+                      disabled={invoices.some((inv) => inv.isEditing)}
+                      sx={{
+                        "&.Mui-disabled": {
+                          opacity: 0.5,
+                          backgroundColor: "transparent",
+                        },
+                      }}
                     >
                       <DeleteIcon sx={{ fontSize: 20, color: "#D34053" }} />
                     </ActionButton>
@@ -771,6 +779,13 @@ export function InvoiceList() {
             onClick={() => {
               handleDelete();
               handleMenuClose();
+            }}
+            disabled={invoices.some((inv) => inv.isEditing)}
+            sx={{
+              "&.Mui-disabled": {
+                opacity: 0.5,
+                pointerEvents: "none",
+              },
             }}
           >
             <Box
