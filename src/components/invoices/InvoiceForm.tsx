@@ -49,7 +49,7 @@ const storeInvoice = (invoice: InvoiceFormData) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify([...invoices, newInvoice]));
 };
 
-export function InvoiceForm() {
+export default function InvoiceForm() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {

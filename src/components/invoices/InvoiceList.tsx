@@ -17,7 +17,7 @@ import { EmptyStateView } from "@/components/invoices/EmptyStateView";
 import { LoadingSkeleton } from "@/components/invoices/LoadingSkeleton";
 import { STORAGE_KEY } from "@/constants";
 
-export function InvoiceList() {
+export default function InvoiceList() {
   const [invoices, setInvoices] = useState<EditableInvoice[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
