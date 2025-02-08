@@ -490,11 +490,23 @@ export function InvoiceList() {
 
   const handleDelete = () => {
     if (selectedInvoice) {
-      const updatedInvoices = invoices.filter(
+      // Get all invoices from local storage
+      const storedInvoices = localStorage.getItem("invoices");
+      const allInvoices = storedInvoices ? JSON.parse(storedInvoices) : [];
+
+      // Remove the selected invoice
+      const updatedStoredInvoices = allInvoices.filter(
+        (invoice: Invoice) => invoice.id !== selectedInvoice
+      );
+
+      // Update local storage with all invoices
+      localStorage.setItem("invoices", JSON.stringify(updatedStoredInvoices));
+
+      // Update the filtered view
+      const updatedFilteredInvoices = invoices.filter(
         (invoice) => invoice.id !== selectedInvoice
       );
-      localStorage.setItem("invoices", JSON.stringify(updatedInvoices));
-      setInvoices(updatedInvoices);
+      setInvoices(updatedFilteredInvoices);
       handleMenuClose();
     }
   };
