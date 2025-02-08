@@ -9,6 +9,47 @@ A modern invoice management application built with Next.js, Material-UI, and Typ
 - Form validation with React Hook Form and Zod
 - Built with TypeScript for type safety
 
+## Technical Decisions
+
+### Project Structure
+
+The project follows a feature-first organization pattern where related code is grouped by feature rather than type. This makes the codebase more maintainable and scalable.
+
+### Component Organization
+
+```
+src/components/invoices/
+├── InvoiceForm.tsx           # Main component
+├── types/                    # Types specific to invoice components
+│   └── index.d.ts
+├── styles/                   # Styles specific to invoice components
+│   ├── InvoiceForm.styles.ts
+│   └── InvoiceList.styles.ts
+└── subcomponents/           # Smaller components used by main components
+```
+
+### Styling Strategy
+
+- Each component has its own `.styles.ts` file located next to the component or in a `styles` folder if there are multiple style files
+- Styles are colocated with their components for better maintainability
+- Complex components with multiple style files have their own `styles` directory
+- Using Emotion styled-components with Material-UI for consistent theming
+
+### Type Definitions
+
+- Types are organized based on component scope:
+  - Shared types are in `src/types`
+  - Feature-specific types are in their respective feature directories
+  - Component-specific types are either in the component file or in a `types` directory if complex
+- This organization ensures type definitions are as close as possible to where they're used
+
+### State Management
+
+- Using React's built-in useState for component-level state
+- URL parameters for search and filter state
+- Local storage for data persistence
+- This approach keeps the app simple and avoids over-engineering
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
